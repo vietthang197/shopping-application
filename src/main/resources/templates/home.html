@@ -1,10 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body>
-<a href="/login">login now</a>
+<body class="bg-gray-100">
+<!-- Navbar -->
+<header class="bg-white shadow">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Icon menu ở góc trái -->
+    <div class="flex items-center space-x-4">
+      <a href="#" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Shopping App
+      </a>
+    </div>
+    <!-- Các nút điều hướng với icon -->
+    <div class="flex items-center space-x-6">
+      <a href="#" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">shopping_cart</span> Cart
+      </a>
+      <a href="#" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">inventory_2</span> Product Categories
+      </a>
+      <a href="#" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">search</span> Search product
+      </a>
+      <a href="#" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">account_circle</span> Login/Register
+      </a>
+    </div>
+  </div>
+</header>
+
+
+<!-- Banner -->
+<div class="container mx-auto mt-6 px-4">
+  <img src="https://via.placeholder.com/1200x400" alt="Banner" class="w-full h-60 md:h-80 lg:h-96 object-cover rounded-lg shadow-md">
+</div>
+
+<!-- Popular Products Section -->
+<div class="container mx-auto px-4 mt-8">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">Popular product</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Product Card -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img src="https://via.placeholder.com/300x200" alt="Product" class="w-full h-48 object-cover">
+      <div class="p-4">
+        <h3 class="text-lg font-bold text-gray-800">T-shirt</h3>
+        <p class="text-gray-600">Price: 2$</p>
+        <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Add to cart</button>
+      </div>
+    </div>
+    <!-- Duplicate product card to show more items -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img src="https://via.placeholder.com/300x200" alt="Product" class="w-full h-48 object-cover">
+      <div class="p-4">
+        <h3 class="text-lg font-bold text-gray-800">T-shirt</h3>
+        <p class="text-gray-600">Price: 2$</p>
+        <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Add to cart</button>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <img src="https://via.placeholder.com/300x200" alt="Product" class="w-full h-48 object-cover">
+      <div class="p-4">
+        <h3 class="text-lg font-bold text-gray-800">T-shirt</h3>
+        <p class="text-gray-600">Price: 2$</p>
+        <button class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">Add to cart</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
