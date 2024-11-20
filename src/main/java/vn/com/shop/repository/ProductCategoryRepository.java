@@ -6,4 +6,5 @@ import vn.com.shop.entity.ProductCategory;
 
 @Repository
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, String> {
+    boolean existsByName(String name);
 }

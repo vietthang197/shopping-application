@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,23 +13,26 @@
   <div class="container mx-auto px-4 py-4 flex items-center justify-between">
     <!-- Icon menu ở góc trái -->
     <div class="flex items-center space-x-4">
-      <a href="#" class="flex items-center text-gray-800 font-semibold">
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
         <span class="material-icons mr-2">store</span> Shopping App
       </a>
     </div>
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
-      <a href="#" class="flex items-center text-gray-800">
+      <a href="/cart" class="flex items-center text-gray-800">
         <span class="material-icons mr-1">shopping_cart</span> Cart
       </a>
-      <a href="#" class="flex items-center text-gray-800">
+      <a href="/product-category" class="flex items-center text-gray-800">
         <span class="material-icons mr-1">inventory_2</span> Product Categories
       </a>
-      <a href="#" class="flex items-center text-gray-800">
+      <a href="/search" class="flex items-center text-gray-800">
         <span class="material-icons mr-1">search</span> Search product
       </a>
-      <a href="#" class="flex items-center text-gray-800">
+      <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
         <span class="material-icons mr-1">account_circle</span> Login/Register
+      </a>
+      <a sec:authorize="isFullyAuthenticated()" href="/profile" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">account_circle</span> <span th:text="${#authentication.getName()}"></span>
       </a>
     </div>
   </div>

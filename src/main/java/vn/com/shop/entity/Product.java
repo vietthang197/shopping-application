@@ -28,10 +28,16 @@ public class Product {
     @JoinColumn(name = "product_category_id", nullable = false)
     private ProductCategory productCategory;
 
-    @Column(name = "price", precision = 19)
-    private BigDecimal price;
+    @Column(name = "sell_price", precision = 19)
+    private BigDecimal sellPrice; // gia ban
+
+    @Column(name = "buy_price", precision = 19)
+    private BigDecimal buyPrice; // gia nhap
 
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private Set<ProductImage> productImages = new LinkedHashSet<>();
+
+    @Column(name = "sku")
+    private String sku;
 
 }
