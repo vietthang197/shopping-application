@@ -1,6 +1,7 @@
 package vn.com.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,10 +28,13 @@ public class ProductImage {
     @Column(name = "file_size", nullable = false)
     private Long fileSize;
 
+    @Column(name = "is_avatar", nullable = false)
+    private String isAvatar; // Y is product avatar, N is list sub image
 
     @ManyToOne
     @JoinColumn(name = "product_id")
     @JsonBackReference
+    @JsonIgnore
     private Product product;
 
     @Override

@@ -1,10 +1,14 @@
 package vn.com.shop.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -35,9 +39,14 @@ public class Product {
     private BigDecimal buyPrice; // gia nhap
 
     @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @JsonIgnore
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<ProductImage> productImages = new LinkedHashSet<>();
 
     @Column(name = "sku")
     private String sku;
+
+    private LocalDateTime createdDt;
 
 }

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
 
@@ -18,6 +20,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public Page<ProductCategory> getAllProductCategories(Pageable pageable) {
         return productCategoryRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<ProductCategory> getAllProductCategories() {
+        return productCategoryRepository.findAll();
     }
 
     @Override
