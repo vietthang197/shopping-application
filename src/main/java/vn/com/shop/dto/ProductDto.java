@@ -35,4 +35,6 @@ public class ProductDto {
     private String sku;
 
     private LocalDateTime createdDt;
+
+    private String description;
 }

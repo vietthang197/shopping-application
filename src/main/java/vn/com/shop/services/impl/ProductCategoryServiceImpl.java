@@ -1,6 +1,7 @@
 package vn.com.shop.services.impl;
 
 import org.springframework.stereotype.Service;
+import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.entity.ProductCategory;
 import vn.com.shop.repository.ProductCategoryRepository;
 import vn.com.shop.services.ProductCategoryService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
@@ -55,5 +57,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public void deleteProductCategory(String id) {
         productCategoryRepository.deleteById(id);
+    }
+
+    @Override
+    public List<ProductCategoryDto> findAll() {
+        return productCategoryRepository.findAll().stream().map(item -> {
+            ProductCategoryDto productCategoryDto = new ProductCategoryDto();
+            productCategoryDto.setName(item.getName());
+            productCategoryDto.setId(item.getId());
+            return productCategoryDto;
+        }).collect(Collectors.toList());
     }
 }

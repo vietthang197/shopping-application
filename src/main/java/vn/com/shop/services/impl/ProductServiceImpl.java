@@ -14,6 +14,7 @@ import vn.com.shop.services.ProductService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -87,5 +88,10 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> productPage = productRepository.findAll(
                 PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdDt")));
         return productPage.getContent();
+    }
+
+    @Override
+    public Optional<Product> findById(String id) {
+        return productRepository.findById(id);
     }
 }

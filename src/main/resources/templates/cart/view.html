@@ -1,0 +1,109 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Shopping Cart</h1>
+
+    <div th:if="${cart.getItems().isEmpty()}" class="text-center py-8">
+        <p class="text-gray-500">Your cart is empty</p>
+        <a href="/" class="inline-block mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg">
+            Continue Shopping
+        </a>
+    </div>
+
+    <div th:unless="${cart.getItems().isEmpty()}" class="grid grid-cols-1 gap-6">
+        <!-- Cart Items -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-6">
+                <table class="w-full">
+                    <thead>
+                    <tr class="border-b">
+                        <th class="text-left py-2">Product</th>
+                        <th class="text-center py-2">Quantity</th>
+                        <th class="text-right py-2">Price</th>
+                        <th class="text-right py-2">Subtotal</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${cart.getItems().values()}" class="border-b">
+                        <td class="py-4">
+                            <div class="flex items-center">
+                                <img th:if="${item.imageUrl}"
+                                     th:src="${item.imageUrl}"
+                                     class="w-16 h-16 object-cover rounded">
+                                <div class="ml-4">
+                                    <div class="font-medium" th:text="${item.productName}"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <input type="number"
+                                   th:value="${item.quantity}"
+                                   min="1"
+                                   th:data-product-id="${item.productId}"
+                                   onchange="updateQuantity(this)"
+                                   class="w-16 text-center border rounded">
+                        </td>
+                        <td class="text-right" th:text="'1000'"></td>
+                        <td class="text-right" th:text="'total'"></td>
+                        <td class="text-right">
+<!--                            <button th:onclick="'removeItem(\'' + ${item.productId} + '\')'"-->
+<!--                                    class="text-red-500 hover:text-red-700">-->
+<!--                                <span class="material-icons">delete</span>-->
+<!--                            </button>-->
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr class="font-bold">
+                        <td colspan="3" class="text-right py-4">Total:</td>
+                        <td class="text-right py-4" th:text="'fuck'"></td>
+                        <td></td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Checkout Button -->
+        <div class="flex justify-end mt-6">
+            <a href="/checkout"
+               class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">
+                Proceed to Checkout
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateQuantity(input) {
+        const productId = input.getAttribute('data-product-id');
+        const quantity = input.value;
+
+        fetch('/cart/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productId=${productId}&quantity=${quantity}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            });
+    }
+
+    function removeItem(productId) {
+        if (confirm('Are you sure you want to remove this item?')) {
+            fetch('/cart/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `productId=${productId}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    location.reload();
+                });
+        }
+    }
+</script>

@@ -49,4 +49,6 @@ public class Product {
 
     private LocalDateTime createdDt;
 
+    @Lob
+    private String description;
 }

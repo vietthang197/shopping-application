@@ -6,6 +6,7 @@ import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductCategory;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     Page<Product> getAllProducts(Pageable pageable);
@@ -16,4 +17,5 @@ public interface ProductService {
     void deleteProduct(String id);
 
     List<Product> findPopularProduct();
+    Optional<Product> findById(String id);
 }

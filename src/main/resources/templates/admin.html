@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<!-- Navbar -->
+<header class="bg-white shadow">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Icon menu ở góc trái -->
+    <div class="flex items-center space-x-4">
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Shopping App
+      </a>
+    </div>
+    <!-- Các nút điều hướng với icon -->
+    <div class="flex items-center space-x-6">
+      <a href="/products" class="flex items-center text-gray-800">
+        Product
+      </a>
+      <a href="/product-categories" class="flex items-center text-gray-800">
+        Category
+      </a>
+      <a href="/roles" class="flex items-center text-gray-800">
+        Role
+      </a>
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

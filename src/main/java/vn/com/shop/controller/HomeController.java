@@ -5,13 +5,16 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.dto.ProductDto;
 import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductImage;
+import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
 import java.util.List;
@@ -24,9 +27,13 @@ import java.util.stream.Collectors;
 public class HomeController {
 
     private final ProductService productService;
+    private final ProductCategoryService productCategoryService;
 
     @GetMapping
     public String home(Model model) {
+
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.findAll();
+
         List<Product> popularProduct = productService.findPopularProduct();
         List<ProductDto> productDtoList = popularProduct.stream().map(product -> {
             ProductDto productDto = new ProductDto();
@@ -45,6 +52,7 @@ public class HomeController {
             return productDto;
         }).collect(Collectors.toList());
         model.addAttribute("popularProduct", productDtoList);
+        model.addAttribute("categories", productCategoryDtos);
         return "home";
     }
 }
