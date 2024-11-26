@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ShoppingCart {
     private Map<String, CartItem> items = new ConcurrentHashMap<>();
 
-    public void addItem(Product product) {
+    public void addItem(Product product, int quantity) {
         CartItem item = items.get(product.getId());
 
         if (item == null) {
@@ -19,12 +19,18 @@ public class ShoppingCart {
             item.setProductId(product.getId());
             item.setProductName(product.getName());
             item.setPrice(product.getSellPrice());
-            item.setQuantity(1);
+            item.setQuantity(quantity);
             Optional<ProductImage> avatarOptional = product.getProductImages().stream().filter(p -> "Y".equalsIgnoreCase(p.getIsAvatar())).findFirst();
             item.setImageUrl(avatarOptional.map(productImage -> "/product-image/view/" + productImage.getId()).orElse(null));
             items.put(product.getId(), item);
         } else {
-            item.setQuantity(item.getQuantity() + 1);
+            // Cộng dồn số lượng mới vào số lượng hiện có
+            item.setQuantity(item.getQuantity() + quantity);
+        }
+
+        // Kiểm tra nếu số lượng vượt quá tồn kho
+        if (item.getQuantity() > product.getQuantity()) {
+            throw new RuntimeException("Số lượng vượt quá hàng tồn kho");
         }
     }
 

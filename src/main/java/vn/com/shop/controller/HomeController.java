@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.dto.ProductDto;
@@ -18,6 +19,7 @@ import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -54,5 +56,30 @@ public class HomeController {
         model.addAttribute("popularProduct", productDtoList);
         model.addAttribute("categories", productCategoryDtos);
         return "home";
+    }
+
+    @GetMapping("/product-detail/{id}")
+    public String productDetail(@PathVariable String id, Model model) {
+        Optional<Product> productOptional = productService.findById(id);
+        if (productOptional.isEmpty()) {
+            return "404";
+        } else {
+            Product product = productOptional.get();
+            ProductDto productDto = new ProductDto();
+            productDto.setId(product.getId());
+            productDto.setName(product.getName());
+            productDto.setProductCategory(product.getProductCategory());
+            productDto.setBuyPrice(product.getBuyPrice());
+            productDto.setSellPrice(product.getSellPrice());
+            productDto.setQuantity(product.getQuantity());
+            productDto.setCreatedDt(product.getCreatedDt());
+            productDto.setSku(product.getSku());
+            productDto.setProductImages(product.getProductImages());
+
+            ProductImage avatar = product.getProductImages().stream().filter(item -> item.getIsAvatar().equals("Y")).findFirst().orElse(null);
+            productDto.setAvatar(avatar);
+            model.addAttribute("product", productDto);
+            return "product-detail";
+        }
     }
 }
