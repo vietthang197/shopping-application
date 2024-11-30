@@ -29,7 +29,7 @@ public class ProductMapper {
         Set<ProductImage> productImageSet= product.getProductImages();
         if (productImageSet != null) {
             Optional<ProductImage> avatarOptional = productImageSet.stream().filter(item -> "Y".equalsIgnoreCase(item.getIsAvatar())).findFirst();
-            productDto.setAvatar(ProductImageMapper.toDto(avatarOptional.get()));
+            avatarOptional.ifPresent(productImage -> productDto.setAvatar(ProductImageMapper.toDto(productImage)));
         }
         return productDto;
     }

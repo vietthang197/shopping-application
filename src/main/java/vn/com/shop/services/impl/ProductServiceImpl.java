@@ -14,6 +14,7 @@ import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +44,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product createProduct(Product product) {
         validateProduct(product);
+        product.setCreatedDt(LocalDateTime.now());
         return productRepository.save(product);
     }
 
@@ -98,5 +100,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Optional<Product> findById(String id) {
         return productRepository.findById(id);
+    }
+
+    @Override
+    public List<Product> findByProductCategoryLimit(String productCategoryId, Integer limit) {
+        return productRepository.findByProductCategory_Id(productCategoryId, PageRequest.ofSize(limit)).getContent();
+    }
+
+    @Override
+    public Page<Product> getProductsByCategory(String categoryId, PageRequest pageRequest) {
+        return productRepository.findByProductCategory_Id(categoryId, pageRequest);
     }
 }

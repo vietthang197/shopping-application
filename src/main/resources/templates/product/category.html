@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${category.name + ' - Shopping App'}">Category - Shopping App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+<!-- Include your header/navbar here -->
+<header class="bg-white shadow" style="z-index: 900">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Icon menu ở góc trái -->
+    <div class="flex items-center space-x-4">
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Shopping App
+      </a>
+    </div>
+    <!-- Các nút điều hướng với icon -->
+    <div class="flex items-center space-x-6">
+      <a href="/cart" class="flex items-center text-gray-800 relative">
+        <span class="material-icons mr-1">shopping_cart</span> Cart
+        <span id="cartCount"
+              th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
+              th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                </span>
+      </a>
+      <div class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="categories-menu-button"
+                data-dropdown-toggle="categories-dropdown">
+          <span class="material-icons mr-1">inventory_2</span>
+          Product Categories
+          <span class="material-icons text-sm ml-1">arrow_drop_down</span>
+        </button>
+
+        <!-- Categories Dropdown menu -->
+        <div id="categories-dropdown"
+             class="hidden absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-10">
+          <!-- Lặp qua danh sách categories -->
+          <div th:each="category : ${categories}">
+            <a th:href="@{'/product-categories/product/' + ${category.getId()}}"
+               class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <span th:text="${category.getName()}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="/order-tracking" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">search</span> Tra cứu đơn hàng
+      </a>
+      <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">account_circle</span> Login/Register
+      </a>
+      <!-- Bằng đoạn code dropdown menu sau -->
+      <div sec:authorize="isFullyAuthenticated()" class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="user-menu-button"
+                aria-expanded="false"
+                data-dropdown-toggle="user-dropdown">
+          <span class="material-icons mr-1">account_circle</span>
+          <span th:text="${#authentication.getName()}" class="mr-1"></span>
+          <span class="material-icons text-sm">arrow_drop_down</span>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div id="user-dropdown"
+             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
+          <a href="/profile"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons mr-2 align-middle text-sm">person</span>
+            Profile
+          </a>
+          <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons mr-2 align-middle text-sm">store</span>
+            Manage shop
+          </a>
+          <form th:action="@{/logout}" method="post" class="block">
+            <button type="submit"
+                    class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <span class="material-icons mr-2 align-middle text-sm">logout</span>
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container mx-auto px-4 py-8">
+  <!-- Breadcrumb -->
+  <div class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+    <a href="/" class="hover:text-blue-500">Trang chủ</a>
+    <span>/</span>
+    <span class="text-gray-700" th:text="${category.name}">Category Name</span>
+  </div>
+
+  <!-- Category Title -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-800" th:text="${category.name}">Category Name</h1>
+    <p class="text-gray-600 mt-2" th:text="${'Hiển thị ' + products.numberOfElements + ' sản phẩm'}">
+      Showing products
+    </p>
+  </div>
+
+  <!-- Products Grid -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Product Card -->
+    <div th:each="product : ${products}"
+         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <img th:src="'/product-image/view/' + ${product.getAvatar() == null? '#' : product.getAvatar().getId()}"
+           alt="Product" class="w-full h-48 object-cover">
+      <div class="p-4">
+        <a class="text-lg font-bold text-gray-800 h3" th:text="${product.getName()}" th:href="'/product-detail/' + ${product.getId()}"></a>
+        <p class="text-gray-600">Price: <span
+                th:text="${#numbers.formatDecimal(product.getSellPrice(), 1, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+        </p>
+        <!-- Trong card sản phẩm, kiểm tra đăng nhập bằng Thymeleaf sec:authorize -->
+        <button sec:authorize="isFullyAuthenticated()"
+                th:data-product-id="${product.id}"
+                onclick="addToCart(this)"
+                class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
+          Add to cart
+        </button>
+
+        <a sec:authorize="!isFullyAuthenticated()" href="/login" target="_self"
+           class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 text-center inline-block">
+          Add to cart
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div th:if="${products.totalPages > 1}" class="flex justify-center mt-8">
+    <nav class="inline-flex rounded-md shadow">
+      <a th:href="@{${'/products/category/' + category.id}(page=${products.number - 1})}"
+         th:class="${products.first ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}"
+         class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
+        <span class="material-icons">chevron_left</span>
+      </a>
+
+      <span th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}">
+                    <a th:href="@{${'/products/category/' + category.id}(page=${i})}"
+                       th:text="${i + 1}"
+                       th:class="${i == products.number ? 'bg-blue-50 border-blue-500 text-blue-600' : 'hover:bg-gray-50'}"
+                       class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                    </a>
+                </span>
+
+      <a th:href="@{${'/products/category/' + category.id}(page=${products.number + 1})}"
+         th:class="${products.last ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'}"
+         class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500">
+        <span class="material-icons">chevron_right</span>
+      </a>
+    </nav>
+  </div>
+</div>
+
+<!-- Add to Cart Script -->
+<script th:inline="javascript">
+  const csrfToken = document.querySelector("meta[name='_csrf']").content;
+  const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
+
+  function addToCart(button) {
+    const productId = button.getAttribute('data-product-id');
+
+    fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        [csrfHeader]: csrfToken
+      },
+      body: `productId=${productId}`
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                updateCartCount(data.totalItems);
+                showNotification('Thêm vào giỏ hàng thành công');
+              } else {
+                showNotification(data.message || 'Có lỗi xảy ra', 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showNotification('Có lỗi xảy ra', 'error');
+            });
+  }
+
+  function showNotification(message, type = 'success') {
+    // Implement your notification logic here
+  }
+
+  function updateCartCount(count) {
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) {
+      cartCount.textContent = '(' + count + ')';
+      if (count > 0) {
+        cartCount.classList.remove('hidden');
+      } else {
+        cartCount.classList.add('hidden');
+      }
+    }
+  }
+</script>
+</body>
+</html>

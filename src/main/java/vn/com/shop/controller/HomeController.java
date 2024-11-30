@@ -13,6 +13,7 @@ import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductImage;
 import vn.com.shop.mapper.ProductCategoryMapper;
 import vn.com.shop.mapper.ProductImageMapper;
+import vn.com.shop.mapper.ProductMapper;
 import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
@@ -51,6 +52,12 @@ public class HomeController {
             productDto.setAvatar(ProductImageMapper.toDto(avatar));
             return productDto;
         }).collect(Collectors.toList());
+
+        for (ProductCategoryDto productCategoryDto : productCategoryDtos) {
+            List<Product> products = productService.findByProductCategoryLimit(productCategoryDto.getId(), 3);
+            productCategoryDto.setProducts(products.stream().map(ProductMapper::toDto).collect(Collectors.toList()));
+        }
+
         model.addAttribute("popularProduct", productDtoList);
         model.addAttribute("categories", productCategoryDtos);
         return "home";
@@ -77,7 +84,7 @@ public class HomeController {
             ProductImage avatar = product.getProductImages().stream().filter(item -> item.getIsAvatar().equals("Y")).findFirst().orElse(null);
             productDto.setAvatar(ProductImageMapper.toDto(avatar));
             model.addAttribute("product", productDto);
-            return "product-detail";
+            return "product/product-detail";
         }
     }
 }

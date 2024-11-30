@@ -6,6 +6,7 @@ import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.entity.ProductCategory;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductCategoryService {
     Page<ProductCategory> getAllProductCategories(Pageable pageable);
@@ -21,4 +22,5 @@ public interface ProductCategoryService {
     void deleteProductCategory(String id);
 
     List<ProductCategoryDto> findAll();
+    Optional<ProductCategory> findById(String id);
 }

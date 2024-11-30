@@ -1,6 +1,7 @@
 package vn.com.shop.services;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductCategory;
@@ -18,4 +19,7 @@ public interface ProductService {
 
     List<Product> findPopularProduct();
     Optional<Product> findById(String id);
+    List<Product> findByProductCategoryLimit(String productCategoryId, Integer limit);
+
+    Page<Product> getProductsByCategory(String categoryId, PageRequest createdDt);
 }

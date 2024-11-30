@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,5 +72,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             productCategoryDto.setId(item.getId());
             return productCategoryDto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<ProductCategory> findById(String id) {
+        return productCategoryRepository.findById(id);
     }
 }

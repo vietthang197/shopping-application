@@ -3,11 +3,18 @@ package vn.com.shop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import vn.com.shop.dto.ProductDto;
+import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductCategory;
+import vn.com.shop.mapper.ProductMapper;
 import vn.com.shop.services.ProductCategoryService;
+import vn.com.shop.services.ProductService;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/product-categories")
@@ -15,6 +22,9 @@ public class ProductCategoryController {
 
     @Autowired
     private ProductCategoryService productCategoryService;
+
+    @Autowired
+    private ProductService productService;
 
     @GetMapping
     public String listProductCategories(Model model,
@@ -57,5 +67,28 @@ public class ProductCategoryController {
     public String deleteProductCategory(@PathVariable String id) {
         productCategoryService.deleteProductCategory(id);
         return "redirect:/product-categories";
+    }
+
+    @GetMapping("/product/{categoryId}")
+    public String listProductsByCategory(@PathVariable String categoryId,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "12") int size,
+                                         Model model) {
+
+        Optional<ProductCategory> productCategoryOptional = productCategoryService.findById(categoryId);
+        if (productCategoryOptional.isEmpty()) {
+            return "404";
+        }
+        ProductCategory category = productCategoryOptional.get();
+
+        Page<Product> products = productService.getProductsByCategory(categoryId,
+                PageRequest.of(page, size, Sort.by("createdDt").descending()));
+
+        Page<ProductDto> productDtos = products.map(ProductMapper::toDto);
+
+        model.addAttribute("category", category);
+        model.addAttribute("products", productDtos);
+
+        return "product/category";
     }
 }
