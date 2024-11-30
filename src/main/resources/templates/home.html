@@ -47,13 +47,13 @@
                     <!-- Lặp qua danh sách categories -->
                     <div th:each="category : ${categories}">
                         <a th:href="@{'/product-categories/product/' + ${category.getId()}}"
-                           class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                           class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
                             <span th:text="${category.getName()}"></span>
                         </a>
                     </div>
                 </div>
             </div>
-            <a href="/order-tracking" class="flex items-center text-gray-800">
+            <a href="/orders/tracking" class="flex items-center text-gray-800">
                 <span class="material-icons mr-1">search</span> Tra cứu đơn hàng
             </a>
             <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
@@ -73,18 +73,18 @@
 
                 <!-- Dropdown menu -->
                 <div id="user-dropdown"
-                     class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
+                     class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10" style="z-index: 999">
                     <a href="/profile"
-                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
                         <span class="material-icons mr-2 align-middle text-sm">person</span>
                         Profile
                     </a>
                     <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
-                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
                         <span class="material-icons mr-2 align-middle text-sm">store</span>
                         Manage shop
                     </a>
-                    <form th:action="@{/logout}" method="post" class="block">
+                    <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
                         <button type="submit"
                                 class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                             <span class="material-icons mr-2 align-middle text-sm">logout</span>
@@ -100,7 +100,7 @@
 
 <!-- Banner -->
 <!-- Banner Slider -->
-<div class="container mx-auto mt-6 px-4" style="z-index: 90">
+<div class="container mx-auto mt-6 px-4" style="z-index: -1">
     <div id="default-carousel" class="relative w-full" data-carousel="slide">
         <!-- Slider indicators -->
         <div class="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3 rtl:space-x-reverse">
@@ -113,7 +113,7 @@
         </div>
 
         <!-- Slider items -->
-        <div class="relative h-60 md:h-80 lg:h-96 overflow-hidden rounded-lg">
+        <div class="relative h-60 md:h-80 lg:h-96 overflow-hidden rounded-lg" style="z-index: -1;">
             <!-- Item 1 -->
             <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
                 <img src="https://bizweb.dktcdn.net/100/150/335/themes/805581/assets/cat-banner-1.jpg?1721533589657"

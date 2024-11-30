@@ -19,20 +19,20 @@
     </div>
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
-      <a href="/products" class="flex items-center text-gray-800">
+      <a href="/admin/products" class="flex items-center text-gray-800">
         Product
       </a>
-      <a href="/product-categories" class="flex items-center text-gray-800">
+      <a href="/admin/product-categories" class="flex items-center text-gray-800">
         Category
       </a>
-      <a href="/roles" class="flex items-center text-gray-800">
+      <a href="/admin/roles" class="flex items-center text-gray-800">
         Role
       </a>
     </div>
   </div>
 </header>
 <div class="container mt-5">
-  <a href="/products/create" class="btn btn-primary mb-3">Create New Product</a>
+  <a href="/admin/products/create" class="btn btn-primary mb-3">Create New Product</a>
 
   <table class="table">
     <thead>
@@ -57,8 +57,8 @@
       <td th:text="${#numbers.formatDecimal(product.buyPrice, 0, 'COMMA', 0, 'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(product.sellPrice, 0, 'COMMA', 0, 'POINT')}"></td>
       <td>
-        <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning">Edit</a>
-        <a th:href="@{/products/delete/{id}(id=${product.id})}"
+        <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning">Edit</a>
+        <a th:href="@{/admin/products/delete/{id}(id=${product.id})}"
            class="btn btn-sm btn-danger"
            onclick="return confirm('Are you sure?')">Delete</a>
       </td>

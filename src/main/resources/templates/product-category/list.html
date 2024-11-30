@@ -19,20 +19,20 @@
     </div>
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
-      <a href="/products" class="flex items-center text-gray-800">
+      <a href="/admin/products" class="flex items-center text-gray-800">
         Product
       </a>
-      <a href="/product-categories" class="flex items-center text-gray-800">
+      <a href="/admin/product-categories" class="flex items-center text-gray-800">
         Category
       </a>
-      <a href="/roles" class="flex items-center text-gray-800">
+      <a href="/admin/roles" class="flex items-center text-gray-800">
         Role
       </a>
     </div>
   </div>
 </header>
 <div class="container mt-5">
-  <a href="/product-categories/create" class="btn btn-primary mb-3">Create New Product Category</a>
+  <a href="/admin/product-categories/create" class="btn btn-primary mb-3">Create New Product Category</a>
 
   <table class="table">
     <thead>
@@ -47,8 +47,8 @@
       <td th:text="${productCategory.id}"></td>
       <td th:text="${productCategory.name}"></td>
       <td>
-        <a th:href="@{/product-categories/edit/{id}(id=${productCategory.id})}" class="btn btn-sm btn-warning">Edit</a>
-        <a th:href="@{/product-categories/delete/{id}(id=${productCategory.id})}"
+        <a th:href="@{/admin/product-categories/edit/{id}(id=${productCategory.id})}" class="btn btn-sm btn-warning">Edit</a>
+        <a th:href="@{/admin/product-categories/delete/{id}(id=${productCategory.id})}"
            class="btn btn-sm btn-danger"
            onclick="return confirm('Are you sure?')">Delete</a>
       </td>

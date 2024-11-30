@@ -10,7 +10,7 @@ import vn.com.shop.entity.Role;
 import vn.com.shop.services.RoleService;
 
 @Controller
-@RequestMapping("/roles")
+@RequestMapping("/admin/roles")
 public class RoleController {
 
     @Autowired

@@ -11,13 +11,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.dto.ShoppingCart;
 import vn.com.shop.entity.Orders;
 import vn.com.shop.entity.Product;
 import vn.com.shop.services.OrderService;
+import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -29,6 +32,9 @@ public class CartController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ProductCategoryService productCategoryService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(@RequestParam String productId,
@@ -92,6 +98,8 @@ public class CartController {
 
     @GetMapping
     public String viewCart(Model model, HttpSession session) {
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.findAll();
+        model.addAttribute("categories", productCategoryDtos);
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
         if (cart == null) {
             cart = new ShoppingCart();

@@ -1,13 +1,18 @@
 package vn.com.shop.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import vn.com.shop.dto.OrdersDto;
 import vn.com.shop.dto.ShoppingCart;
 import vn.com.shop.entity.Account;
 import vn.com.shop.entity.Customer;
 import vn.com.shop.entity.OrderItem;
 import vn.com.shop.entity.Orders;
+import vn.com.shop.mapper.OrdersMapper;
 import vn.com.shop.repository.CustomerRepository;
 import vn.com.shop.repository.OrderRepository;
 import vn.com.shop.request.CheckoutRequest;
@@ -15,6 +20,7 @@ import vn.com.shop.services.AccountService;
 import vn.com.shop.services.OrderService;
 import vn.com.shop.services.ProductService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -85,6 +91,26 @@ public class OrderServiceImpl implements OrderService {
             case "CANCELLED" -> "Đã hủy";
             default -> status;
         };
+    }
+
+    @Override
+    public Page<OrdersDto> getCurrentUserOrders(String username, PageRequest pageRequest) {
+        return orderRepository.findByCustomer_AccountUsername(username, pageRequest)
+                .map(orders -> {
+                    OrdersDto ordersDto = OrdersMapper.toDto(orders);
+                    BigDecimal totalAmount = BigDecimal.ZERO;
+                    for (OrderItem orderItem : orders.getOrderItems()) {
+                        totalAmount = totalAmount.add(orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())));
+                    }
+                    ordersDto.setTotalAmount(totalAmount);
+                    return ordersDto;
+                });
+    }
+
+    @Override
+    public Optional<Orders> getCurrentUserOrders(String orderId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return orderRepository.findByIdAndCustomer_AccountUsername(orderId, username);
     }
 
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.com.shop.dto.AccountDto;
+import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.dto.ShoppingCart;
 import vn.com.shop.entity.Account;
 import vn.com.shop.entity.Customer;
@@ -23,6 +24,7 @@ import vn.com.shop.request.CheckoutRequest;
 import vn.com.shop.services.AccountService;
 import vn.com.shop.services.CustomerService;
 import vn.com.shop.services.OrderService;
+import vn.com.shop.services.ProductCategoryService;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +42,13 @@ public class CheckoutController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private ProductCategoryService productCategoryService;
+
     @GetMapping
     public String showCheckoutForm(Model model, HttpSession session) {
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.findAll();
+        model.addAttribute("categories", productCategoryDtos);
         ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
         if (cart == null || cart.getItems().isEmpty()) {
             return "redirect:/cart";
@@ -68,7 +75,9 @@ public class CheckoutController {
     public String processCheckout(@Valid CheckoutRequest request,
                                   BindingResult result,
                                   HttpSession session,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes, Model model) {
+        List<ProductCategoryDto> productCategoryDtos = productCategoryService.findAll();
+        model.addAttribute("categories", productCategoryDtos);
         if (result.hasErrors()) {
             return "checkout/index";
         }

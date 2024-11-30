@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,4 +20,5 @@ public class OrdersDto {
     private CustomerDto customer;
     private LocalDateTime createdDt;
     private String status;
+    private BigDecimal totalAmount;
 }

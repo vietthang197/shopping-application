@@ -11,12 +11,10 @@ import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductImage;
 import vn.com.shop.services.ProductImageService;
 import vn.com.shop.services.ProductService;
-
-import java.util.Collections;
 import java.util.List;
 
 @Controller
-@RequestMapping("/products")
+@RequestMapping("/")
 public class ProductController {
 
     @Autowired
@@ -25,7 +23,7 @@ public class ProductController {
     @Autowired
     private ProductImageService productImageService;
 
-    @GetMapping
+    @GetMapping("/admin/products")
     public String listProducts(Model model,
                                @RequestParam(defaultValue = "0") int page,
                                @RequestParam(defaultValue = "10") int size) {
@@ -37,20 +35,20 @@ public class ProductController {
         return "product/list";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/admin/products/delete/{id}")
     public String deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
         return "redirect:/products";
     }
 
-    @GetMapping("/create")
+    @GetMapping("/admin/products/create")
     public String showCreateForm(Model model) {
         model.addAttribute("product", new Product());
         model.addAttribute("categories", productService.getAllCategories());
         return "product/form";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/admin/products/create")
     public String createProduct(
             @ModelAttribute Product product,
             @RequestParam(value = "avatarImage", required = false) MultipartFile avatarImage,
@@ -76,7 +74,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/admin/products/edit/{id}")
     public String showEditForm(@PathVariable String id, Model model) {
         Product product = productService.getProductById(id);
         ProductImage avatar = productImageService.getProductAvatar(product);
@@ -90,7 +88,7 @@ public class ProductController {
         return "product/form";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/admin/products/edit/{id}")
     public String updateProduct(
             @PathVariable String id,
             @ModelAttribute Product product,
@@ -117,7 +115,7 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/delete-image/{imageId}")
+    @GetMapping("/admin/products/delete-image/{imageId}")
     public String deleteProductImage(@PathVariable String imageId,
                                      @RequestParam("productId") String productId) {
         productImageService.deleteProductImage(imageId);
