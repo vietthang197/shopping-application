@@ -3,6 +3,7 @@ package vn.com.shop.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +16,9 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "order_item")
+@Table(name = "order_item", indexes = {
+        @Index(name = "idx_orderitem_product_id", columnList = "product_id", unique = false)
+})
 public class OrderItem {
     @Id
     @Column(name = "id", nullable = false)
@@ -30,8 +33,9 @@ public class OrderItem {
     @EqualsAndHashCode.Exclude
     private Orders orders;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(name = "quantity", nullable = false)

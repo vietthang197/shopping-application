@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import vn.com.shop.dto.RegisterRequest;
-import vn.com.shop.services.impl.AccountService;
+import vn.com.shop.services.AccountService;
 
 @Controller
 @RequestMapping("/")

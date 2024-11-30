@@ -1,6 +1,7 @@
 package vn.com.shop.services.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.entity.ProductCategory;
 import vn.com.shop.repository.ProductCategoryRepository;
@@ -35,6 +36,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 .orElseThrow(() -> new RuntimeException("Product Category not found"));
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductCategory createProductCategory(ProductCategory productCategory) {
         if (productCategoryRepository.existsByName(productCategory.getName())) {
@@ -43,6 +45,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategoryRepository.save(productCategory);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductCategory updateProductCategory(String id, ProductCategory productCategory) {
         ProductCategory existingProductCategory = getProductCategoryById(id);
@@ -54,6 +57,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategoryRepository.save(existingProductCategory);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteProductCategory(String id) {
         productCategoryRepository.deleteById(id);

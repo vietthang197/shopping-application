@@ -12,9 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import vn.com.shop.dto.ShoppingCart;
+import vn.com.shop.entity.Orders;
 import vn.com.shop.entity.Product;
+import vn.com.shop.services.OrderService;
 import vn.com.shop.services.ProductService;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Controller
@@ -23,6 +26,9 @@ public class CartController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OrderService orderService;
 
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(@RequestParam String productId,

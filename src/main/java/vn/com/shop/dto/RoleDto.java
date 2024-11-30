@@ -1,5 +1,6 @@
 package vn.com.shop.dto;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductCategoryDto {
+public class RoleDto {
     private String id;
     private String name;
 }

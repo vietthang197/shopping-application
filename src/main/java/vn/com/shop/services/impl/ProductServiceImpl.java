@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductCategory;
 import vn.com.shop.repository.ProductRepository;
@@ -38,11 +39,15 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public Product createProduct(Product product) {
         validateProduct(product);
         return productRepository.save(product);
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public Product updateProduct(String id, Product product) {
         Product existingProduct = getProductById(id);
         validateProductUpdate(id, product);

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+<header class="bg-white shadow" style="z-index: 900">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Icon menu ở góc trái -->
+    <div class="flex items-center space-x-4">
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Shopping App
+      </a>
+    </div>
+    <!-- Các nút điều hướng với icon -->
+    <div class="flex items-center space-x-6">
+      <a href="/cart" class="flex items-center text-gray-800 relative">
+        <span class="material-icons mr-1">shopping_cart</span> Cart
+        <span id="cartCount"
+              th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
+              th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                </span>
+      </a>
+      <div class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="categories-menu-button"
+                data-dropdown-toggle="categories-dropdown">
+          <span class="material-icons mr-1">inventory_2</span>
+          Product Categories
+          <span class="material-icons text-sm ml-1">arrow_drop_down</span>
+        </button>
+
+        <!-- Categories Dropdown menu -->
+        <div id="categories-dropdown"
+             class="hidden absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-10">
+          <!-- Lặp qua danh sách categories -->
+          <div th:each="category : ${categories}">
+            <a th:href="@{'/products/category/' + ${category.getId()}}"
+               class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <span th:text="${category.getName()}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="/search" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">search</span> Search product
+      </a>
+      <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">account_circle</span> Login/Register
+      </a>
+      <!-- Bằng đoạn code dropdown menu sau -->
+      <div sec:authorize="isFullyAuthenticated()" class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="user-menu-button"
+                aria-expanded="false"
+                data-dropdown-toggle="user-dropdown">
+          <span class="material-icons mr-1">account_circle</span>
+          <span th:text="${#authentication.getName()}" class="mr-1"></span>
+          <span class="material-icons text-sm">arrow_drop_down</span>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div id="user-dropdown"
+             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
+          <a href="/profile"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons mr-2 align-middle text-sm">person</span>
+            Profile
+          </a>
+          <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            <span class="material-icons mr-2 align-middle text-sm">store</span>
+            Manage shop
+          </a>
+          <form th:action="@{/logout}" method="post" class="block">
+            <button type="submit"
+                    class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <span class="material-icons mr-2 align-middle text-sm">logout</span>
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- checkout/index.html -->
+<div class="container mx-auto px-4 py-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Thông tin đặt hàng -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-6">Thông tin đặt hàng</h2>
+
+      <form th:action="@{/checkout}" th:object="${checkoutRequest}" method="post" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Họ và tên</label>
+          <input type="text"
+                 th:field="*{fullName}"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                 required>
+          <span th:if="${#fields.hasErrors('fullName')}"
+                th:errors="*{fullName}"
+                class="text-red-500 text-sm"></span>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Số điện thoại</label>
+          <input type="tel"
+                 th:field="*{phone}"
+                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                 required>
+          <span th:if="${#fields.hasErrors('phone')}"
+                th:errors="*{phone}"
+                class="text-red-500 text-sm"></span>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Địa chỉ giao hàng</label>
+          <textarea th:field="*{address}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    rows="3"
+                    required></textarea>
+          <span th:if="${#fields.hasErrors('address')}"
+                th:errors="*{address}"
+                class="text-red-500 text-sm"></span>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Ghi chú</label>
+          <textarea th:field="*{note}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    rows="2"></textarea>
+        </div>
+
+        <button type="submit"
+                class="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
+          ĐẶT HÀNG
+        </button>
+      </form>
+    </div>
+
+    <!-- Thông tin đơn hàng -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-6">Chi tiết đơn hàng</h2>
+
+      <!-- Cart Items -->
+      <div class="space-y-4">
+        <div th:each="item : ${cart.getItems().values()}"
+             class="flex justify-between items-center py-2 border-b">
+          <div class="flex items-center space-x-4">
+            <img th:if="${item.imageUrl}"
+                 th:src="${item.imageUrl}"
+                 class="w-16 h-16 object-cover rounded">
+            <div>
+              <div class="font-medium" th:text="${item.productName}"></div>
+              <div class="text-sm text-gray-500"
+                   th:text="|Số lượng: ${item.quantity}|"></div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="font-medium"
+                 th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="mt-6 space-y-4">
+        <div class="flex justify-between border-t pt-4">
+          <span class="font-medium">Tổng tiền hàng:</span>
+          <span class="font-medium"
+                th:text="${#numbers.formatDecimal(cart.getTotalAmount(), 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                    </span>
+        </div>
+        <div class="flex justify-between">
+          <span>Phí vận chuyển:</span>
+          <span>Tính theo hãng vận chuyển</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Hình thức vận chuyển:</span>
+          <span class="font-bold">COD</span>
+        </div>
+        <div class="flex justify-between border-t pt-4 text-xl font-bold">
+          <span>Tổng thanh toán:</span>
+          <span class="text-red-500"
+                th:text="${#numbers.formatDecimal(cart.getTotalAmount(), 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                    </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Thêm validation phía client nếu cần
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const phone = document.querySelector('input[name="phone"]').value;
+    if (!/^\d{10}$/.test(phone)) {
+      e.preventDefault();
+      alert('Số điện thoại không hợp lệ');
+    }
+  });
+</script>
+</body>
+</html>

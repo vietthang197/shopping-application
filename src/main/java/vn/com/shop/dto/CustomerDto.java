@@ -9,7 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductCategoryDto {
+public class CustomerDto {
     private String id;
-    private String name;
+
+    private String fullName;
+
+    private String address;
+
+    private String phone;
+
+    private AccountDto account;
 }

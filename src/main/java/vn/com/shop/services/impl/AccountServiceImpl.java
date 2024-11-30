@@ -9,11 +9,10 @@ import vn.com.shop.entity.Account;
 import vn.com.shop.entity.Role;
 import vn.com.shop.repository.AccountRepository;
 import vn.com.shop.repository.RoleRepository;
+import vn.com.shop.services.AccountService;
 
 @Service
-@Transactional
-public class AccountService {
-
+public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
@@ -23,6 +22,8 @@ public class AccountService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
     public Account registerNewAccount(RegisterRequest request) {
         if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
@@ -38,5 +39,9 @@ public class AccountService {
         account.getRoles().add(userRole);
 
         return accountRepository.save(account);
+    }
+
+    public Account findAccountByUsername(String username) {
+        return accountRepository.findByUsername(username).orElse(null);
     }
 }

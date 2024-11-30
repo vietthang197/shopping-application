@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import vn.com.shop.entity.Product;
@@ -33,6 +34,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductImage saveProductAvatar(Product product, MultipartFile file) {
         // Delete existing avatar if exists
@@ -55,6 +57,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         return productImageRepository.save(avatar);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductImage saveProductImage(Product product, MultipartFile file) {
         String filePath = fileStorageService.storeFile(file);
@@ -68,6 +71,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         return productImageRepository.save(productImage);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteProductImage(String imageId) {
         ProductImage image = productImageRepository.findById(imageId)

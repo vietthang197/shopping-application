@@ -9,7 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductCategoryDto {
+public class ProductImageDto {
     private String id;
-    private String name;
+
+    private String filePath;
+
+    private String fileName;
+
+    private Long fileSize;
+
+    private String isAvatar; // Y is product avatar, N is list sub image
 }

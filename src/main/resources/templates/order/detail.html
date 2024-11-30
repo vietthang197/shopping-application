@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <style>
+        .order-status-pending {
+            @apply bg-yellow-100 text-yellow-800;
+        }
+        .order-status-confirmed {
+            @apply bg-blue-100 text-blue-800;
+        }
+        .order-status-shipping {
+            @apply bg-purple-100 text-purple-800;
+        }
+        .order-status-completed {
+            @apply bg-green-100 text-green-800;
+        }
+        .order-status-cancelled {
+            @apply bg-red-100 text-red-800;
+        }
+    </style>
+</head>
+<body>
+<header class="bg-white shadow" style="z-index: 900">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+        <!-- Icon menu ở góc trái -->
+        <div class="flex items-center space-x-4">
+            <a href="/" class="flex items-center text-gray-800 font-semibold">
+                <span class="material-icons mr-2">store</span> Shopping App
+            </a>
+        </div>
+        <!-- Các nút điều hướng với icon -->
+        <div class="flex items-center space-x-6">
+            <a href="/cart" class="flex items-center text-gray-800 relative">
+                <span class="material-icons mr-1">shopping_cart</span> Cart
+                <span id="cartCount"
+                      th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
+                      th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
+                      class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                </span>
+            </a>
+            <div class="relative">
+                <button type="button"
+                        class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                        id="categories-menu-button"
+                        data-dropdown-toggle="categories-dropdown">
+                    <span class="material-icons mr-1">inventory_2</span>
+                    Product Categories
+                    <span class="material-icons text-sm ml-1">arrow_drop_down</span>
+                </button>
+
+                <!-- Categories Dropdown menu -->
+                <div id="categories-dropdown"
+                     class="hidden absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-10">
+                    <!-- Lặp qua danh sách categories -->
+                    <div th:each="category : ${categories}">
+                        <a th:href="@{'/products/category/' + ${category.getId()}}"
+                           class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                            <span th:text="${category.getName()}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <a href="/search" class="flex items-center text-gray-800">
+                <span class="material-icons mr-1">search</span> Search product
+            </a>
+            <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
+                <span class="material-icons mr-1">account_circle</span> Login/Register
+            </a>
+            <!-- Bằng đoạn code dropdown menu sau -->
+            <div sec:authorize="isFullyAuthenticated()" class="relative">
+                <button type="button"
+                        class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                        id="user-menu-button"
+                        aria-expanded="false"
+                        data-dropdown-toggle="user-dropdown">
+                    <span class="material-icons mr-1">account_circle</span>
+                    <span th:text="${#authentication.getName()}" class="mr-1"></span>
+                    <span class="material-icons text-sm">arrow_drop_down</span>
+                </button>
+
+                <!-- Dropdown menu -->
+                <div id="user-dropdown"
+                     class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
+                    <a href="/profile"
+                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        <span class="material-icons mr-2 align-middle text-sm">person</span>
+                        Profile
+                    </a>
+                    <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
+                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        <span class="material-icons mr-2 align-middle text-sm">store</span>
+                        Manage shop
+                    </a>
+                    <form th:action="@{/logout}" method="post" class="block">
+                        <button type="submit"
+                                class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                            <span class="material-icons mr-2 align-middle text-sm">logout</span>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- order/detail.html -->
+<div class="container mx-auto px-4 py-8">
+    <!-- Order Status Banner -->
+    <div class="bg-green-50 text-green-700 p-4 rounded-lg mb-6 flex items-center justify-between">
+        <div class="flex items-center">
+            <span class="material-icons mr-2">check_circle</span>
+            <span>Đơn hàng đã được đặt thành công!</span>
+        </div>
+        <span class="text-sm" th:text="${'Mã đơn hàng: ' + order.id}"></span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Order Information -->
+        <div class="md:col-span-2 space-y-6">
+            <!-- Order Status -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-bold mb-4">Trạng thái đơn hàng</h2>
+                <div class="flex items-center">
+                    <span class="px-3 py-1 rounded-full text-sm font-medium"
+                          th:classappend="${
+                            order.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                            order.status == 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                            order.status == 'SHIPPING' ? 'bg-purple-100 text-purple-800' :
+                            order.status == 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                            'bg-red-100 text-red-800'
+                          }"
+                          th:text="${statusText}">
+                    </span>
+                    <span class="text-sm text-gray-500 ml-4"
+                          th:text="${'Ngày đặt: ' + #temporals.format(order.createdDt, 'dd/MM/yyyy HH:mm')}">
+                    </span>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-bold mb-4">Thông tin giao hàng</h2>
+                <div class="space-y-2">
+                    <p><span class="font-medium">Người nhận:</span>
+                        <span th:text="${order.customer.fullName}"></span>
+                    </p>
+                    <p><span class="font-medium">Số điện thoại:</span>
+                        <span th:text="${order.customer.phone}"></span>
+                    </p>
+                    <p><span class="font-medium">Địa chỉ:</span>
+                        <span th:text="${order.customer.address}"></span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-bold mb-4">Chi tiết đơn hàng</h2>
+                <div class="space-y-4">
+                    <div th:each="item : ${order.orderItems}"
+                         class="flex items-center justify-between py-4 border-b last:border-0">
+                        <div class="flex items-center space-x-4">
+                            <img th:if="${item.getProduct().getAvatar() != null}"
+                                 th:src="'/product-image/view/' + ${item.getProduct().getAvatar() == null ? '#' : item.getProduct().getAvatar().getId()}"
+                                 class="w-16 h-16 object-cover rounded"
+                                 alt="Product Image">
+                            <div>
+                                <p class="font-medium" th:text="${item.product.name}"></p>
+                                <p class="text-sm text-gray-500" th:text="${'Số lượng: ' + item.quantity}"></p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium"
+                               th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 0, 'POINT') + 'đ'}"></p>
+                            <p class="text-sm text-gray-500"
+                               th:text="${'Thành tiền: ' + #numbers.formatDecimal(item.price.multiply(new java.math.BigDecimal(item.quantity)), 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="md:col-span-1">
+            <div class="bg-white rounded-lg shadow p-6 sticky top-6">
+                <h2 class="text-lg font-bold mb-4">Tổng quan đơn hàng</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>Tổng tiền hàng</span>
+                        <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT') + 'đ'}"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Phí vận chuyển</span>
+                        <span>Miễn phí</span>
+                    </div>
+                    <div class="flex justify-between pt-3 border-t font-bold">
+                        <span>Tổng thanh toán</span>
+                        <span class="text-red-500"
+                              th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT') + 'đ'}">
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

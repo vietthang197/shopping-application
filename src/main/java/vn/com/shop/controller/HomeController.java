@@ -2,10 +2,6 @@ package vn.com.shop.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +11,8 @@ import vn.com.shop.dto.ProductCategoryDto;
 import vn.com.shop.dto.ProductDto;
 import vn.com.shop.entity.Product;
 import vn.com.shop.entity.ProductImage;
+import vn.com.shop.mapper.ProductCategoryMapper;
+import vn.com.shop.mapper.ProductImageMapper;
 import vn.com.shop.services.ProductCategoryService;
 import vn.com.shop.services.ProductService;
 
@@ -41,16 +39,16 @@ public class HomeController {
             ProductDto productDto = new ProductDto();
             productDto.setId(product.getId());
             productDto.setName(product.getName());
-            productDto.setProductCategory(product.getProductCategory());
+            productDto.setProductCategory(ProductCategoryMapper.toDto(product.getProductCategory()));
             productDto.setBuyPrice(product.getBuyPrice());
             productDto.setSellPrice(product.getSellPrice());
             productDto.setQuantity(product.getQuantity());
             productDto.setCreatedDt(product.getCreatedDt());
             productDto.setSku(product.getSku());
-            productDto.setProductImages(product.getProductImages());
+            productDto.setProductImages(ProductImageMapper.toSetDto(product.getProductImages()));
 
             ProductImage avatar = product.getProductImages().stream().filter(item -> item.getIsAvatar().equals("Y")).findFirst().orElse(null);
-            productDto.setAvatar(avatar);
+            productDto.setAvatar(ProductImageMapper.toDto(avatar));
             return productDto;
         }).collect(Collectors.toList());
         model.addAttribute("popularProduct", productDtoList);
@@ -68,16 +66,16 @@ public class HomeController {
             ProductDto productDto = new ProductDto();
             productDto.setId(product.getId());
             productDto.setName(product.getName());
-            productDto.setProductCategory(product.getProductCategory());
+            productDto.setProductCategory(ProductCategoryMapper.toDto(product.getProductCategory()));
             productDto.setBuyPrice(product.getBuyPrice());
             productDto.setSellPrice(product.getSellPrice());
             productDto.setQuantity(product.getQuantity());
             productDto.setCreatedDt(product.getCreatedDt());
             productDto.setSku(product.getSku());
-            productDto.setProductImages(product.getProductImages());
+            productDto.setProductImages(ProductImageMapper.toSetDto(product.getProductImages()));
 
             ProductImage avatar = product.getProductImages().stream().filter(item -> item.getIsAvatar().equals("Y")).findFirst().orElse(null);
-            productDto.setAvatar(avatar);
+            productDto.setAvatar(ProductImageMapper.toDto(avatar));
             model.addAttribute("product", productDto);
             return "product-detail";
         }
