@@ -54,7 +54,7 @@ public class ShoppingCart {
     public BigDecimal getTotalAmount() {
         BigDecimal total = new BigDecimal(0);
         for (CartItem item : items.values()) {
-            total = total.add(item.getPrice());
+            total = total.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
         }
         return total;
     }

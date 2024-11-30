@@ -124,10 +124,10 @@
 
                 <!-- Product Info -->
                 <div class="col-span-2 flex items-center space-x-4">
-                    <img th:if="${item.imageUrl}"
-                         th:src="${item.imageUrl}"
+                    <img th:if="${item.getImageUrl()}"
+                         th:src="${item.getImageUrl()}"
                          class="w-20 h-20 object-cover rounded">
-                    <div class="font-medium" th:text="${item.productName}"></div>
+                    <div class="font-medium" th:text="${item.getProductName()}"></div>
                 </div>
 
                 <!-- Price -->
@@ -137,17 +137,19 @@
                 <!-- Quantity -->
                 <div class="flex justify-center items-center space-x-2">
                     <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
-                            >
+                            th:data-product-id="${item.productId}"
+                            onclick="updateQuantity(this, this.getAttribute('data-product-id'), 'decrease')">
                         -
                     </button>
                     <input type="number"
-                           th:value="${item.quantity}"
+                           th:value="${item.getQuantity()}"
                            min="1"
-                           th:data-product-id="${item.productId}"
+                           th:data-product-id="${item.getProductId()}"
                            class="w-16 text-center border rounded py-1"
                            onchange="validateQuantity(this)">
                     <button class="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center"
-                            >
+                            th:data-product-id="${item.productId}"
+                            onclick="updateQuantity(this, this.getAttribute('data-product-id'), 'increase')">
                         +
                     </button>
                 </div>
@@ -158,12 +160,11 @@
                 </div>
 
                 <!-- Delete Button -->
-                <div class="flex justify-center">
-                    <button
-                            class="text-gray-500 hover:text-red-500">
-                        ×
-                    </button>
-                </div>
+                <button th:data-product-id="${item.productId}"
+                        onclick="removeItem(this.getAttribute('data-product-id'))"
+                        class="text-gray-500 hover:text-red-500">
+                    ×
+                </button>
             </div>
         </div>
 
