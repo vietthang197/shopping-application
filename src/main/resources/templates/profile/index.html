@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body class="bg-gray-100">
+<!-- Navbar -->
+<header class="bg-white shadow" style="z-index: 900">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Icon menu ở góc trái -->
+    <div class="flex items-center space-x-4">
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Shopping App
+      </a>
+    </div>
+    <!-- Các nút điều hướng với icon -->
+    <div class="flex items-center space-x-6">
+      <a href="/cart" class="flex items-center text-gray-800 relative">
+        <span class="material-icons mr-1">shopping_cart</span> Giỏ hàng
+        <span id="cartCount"
+              th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
+              th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
+              class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                </span>
+      </a>
+      <div class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="categories-menu-button"
+                data-dropdown-toggle="categories-dropdown">
+          <span class="material-icons mr-1">inventory_2</span>
+          Danh mục sản phẩm
+          <span class="material-icons text-sm ml-1">arrow_drop_down</span>
+        </button>
+
+        <!-- Categories Dropdown menu -->
+        <div id="categories-dropdown"
+             class="hidden absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-10">
+          <!-- Lặp qua danh sách categories -->
+          <div th:each="category : ${categories}">
+            <a th:href="@{'/product-categories/product/' + ${category.getId()}}"
+               class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
+              <span th:text="${category.getName()}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="/orders/tracking" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">search</span> Tra cứu đơn hàng
+      </a>
+      <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
+        <span class="material-icons mr-1">account_circle</span> Login/Register
+      </a>
+      <!-- Bằng đoạn code dropdown menu sau -->
+      <div sec:authorize="isFullyAuthenticated()" class="relative">
+        <button type="button"
+                class="flex items-center text-gray-800 hover:text-gray-600 focus:outline-none"
+                id="user-menu-button"
+                aria-expanded="false"
+                data-dropdown-toggle="user-dropdown">
+          <span class="material-icons mr-1">account_circle</span>
+          <span th:text="${#authentication.getName()}" class="mr-1"></span>
+          <span class="material-icons text-sm">arrow_drop_down</span>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div id="user-dropdown"
+             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10" style="z-index: 999">
+          <a href="/profile"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
+            <span class="material-icons mr-2 align-middle text-sm">person</span>
+            Profile
+          </a>
+          <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
+            <span class="material-icons mr-2 align-middle text-sm">store</span>
+            Quản lý cửa hàng
+          </a>
+          <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
+            <button type="submit"
+                    class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+              <span class="material-icons mr-2 align-middle text-sm">logout</span>
+              Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold mb-8">Thông tin tài khoản</h1>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${success}" class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+      <span th:text="${success}"></span>
+    </div>
+    <div th:if="${error}" class="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+      <span th:text="${error}"></span>
+    </div>
+
+    <!-- Profile Information -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold mb-4">Thông tin cá nhân</h2>
+
+        <form th:action="@{/profile/update}"
+              th:object="${profileUpdateRequest}"
+              method="post"
+              class="space-y-4">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text"
+                   th:value="${account.username}"
+                   disabled
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email"
+                   th:field="*{email}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <span th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"
+                  class="text-sm text-red-600"></span>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              Cập nhật thông tin
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Change Password -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold mb-4">Đổi mật khẩu</h2>
+
+        <form th:action="@{/profile/change-password}"
+              th:object="${passwordChangeRequest}"
+              method="post"
+              class="space-y-4">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Mật khẩu hiện tại</label>
+            <input type="password"
+                   th:field="*{currentPassword}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <span th:if="${#fields.hasErrors('currentPassword')}"
+                  th:errors="*{currentPassword}"
+                  class="text-sm text-red-600"></span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Mật khẩu mới</label>
+            <input type="password"
+                   th:field="*{newPassword}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <span th:if="${#fields.hasErrors('newPassword')}"
+                  th:errors="*{newPassword}"
+                  class="text-sm text-red-600"></span>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Xác nhận mật khẩu mới</label>
+            <input type="password"
+                   th:field="*{confirmPassword}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <span th:if="${#fields.hasErrors('confirmPassword')}"
+                  th:errors="*{confirmPassword}"
+                  class="text-sm text-red-600"></span>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              Đổi mật khẩu
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -4,9 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="${category.name + ' - Shopping App'}">Category - Shopping App</title>
+  <title>Shopping App</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body class="bg-gray-100">
 <!-- Include your header/navbar here -->
@@ -21,7 +24,7 @@
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
       <a href="/cart" class="flex items-center text-gray-800 relative">
-        <span class="material-icons mr-1">shopping_cart</span> Cart
+        <span class="material-icons mr-1">shopping_cart</span> Giỏ hàng
         <span id="cartCount"
               th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
               th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
@@ -34,7 +37,7 @@
                 id="categories-menu-button"
                 data-dropdown-toggle="categories-dropdown">
           <span class="material-icons mr-1">inventory_2</span>
-          Product Categories
+          Danh mục sản phẩm
           <span class="material-icons text-sm ml-1">arrow_drop_down</span>
         </button>
 
@@ -44,7 +47,7 @@
           <!-- Lặp qua danh sách categories -->
           <div th:each="category : ${categories}">
             <a th:href="@{'/product-categories/product/' + ${category.getId()}}"
-               class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+               class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
               <span th:text="${category.getName()}"></span>
             </a>
           </div>
@@ -70,22 +73,22 @@
 
         <!-- Dropdown menu -->
         <div id="user-dropdown"
-             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
+             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10" style="z-index: 999">
           <a href="/profile"
-             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
             <span class="material-icons mr-2 align-middle text-sm">person</span>
-            Profile
+            Tài khoản
           </a>
           <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
-             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
             <span class="material-icons mr-2 align-middle text-sm">store</span>
-            Manage shop
+            Quản lý cửa hàng
           </a>
-          <form th:action="@{/logout}" method="post" class="block">
+          <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
             <button type="submit"
                     class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
               <span class="material-icons mr-2 align-middle text-sm">logout</span>
-              Logout
+              Đăng xuất
             </button>
           </form>
         </div>
@@ -127,12 +130,12 @@
                 th:data-product-id="${product.id}"
                 onclick="addToCart(this)"
                 class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-          Add to cart
+          Thêm vào giỏ hàng
         </button>
 
         <a sec:authorize="!isFullyAuthenticated()" href="/login" target="_self"
            class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 text-center inline-block">
-          Add to cart
+          Thêm vào giỏ hàng
         </a>
       </div>
     </div>
@@ -164,8 +167,7 @@
   </div>
 </div>
 
-<!-- Add to Cart Script -->
-<script th:inline="javascript">
+<script sec:authorize="isFullyAuthenticated()">
   const csrfToken = document.querySelector("meta[name='_csrf']").content;
   const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
@@ -182,23 +184,49 @@
     })
             .then(response => response.json())
             .then(data => {
-              if (data.success) {
-                updateCartCount(data.totalItems);
-                showNotification('Thêm vào giỏ hàng thành công');
-              } else {
-                showNotification(data.message || 'Có lỗi xảy ra', 'error');
-              }
+              updateCartCount(data.totalItems);
+              showNotification('Thêm vào giỏ hàng thành công');
             })
             .catch(error => {
-              console.error('Error:', error);
-              showNotification('Có lỗi xảy ra', 'error');
+              showNotification('Thêm vào giỏ hàng thất bại', 'error');
             });
   }
 
-  function showNotification(message, type = 'success') {
-    // Implement your notification logic here
+  function updateQuantity(input) {
+    const productId = input.getAttribute('data-product-id');
+    const quantity = input.value;
+
+    fetch('/cart/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        [csrfHeader]: csrfToken
+      },
+      body: `productId=${productId}&quantity=${quantity}`
+    })
+            .then(response => response.json())
+            .then(data => {
+              location.reload();
+            });
   }
 
+  // Notification function
+  function showNotification(message, type = 'success') {
+    // Implement your notification UI here
+    // Ví dụ sử dụng Toast của Flowbite
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-5 right-5 p-4 rounded-lg text-white ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    }`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 3000);
+  }
+
+  // Cart count update
   function updateCartCount(count) {
     const cartCount = document.getElementById('cartCount');
     if (cartCount) {

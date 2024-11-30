@@ -2,6 +2,9 @@ package vn.com.shop.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
+import vn.com.shop.dto.OrderStatistics;
 import vn.com.shop.dto.OrdersDto;
 import vn.com.shop.dto.ShoppingCart;
 import vn.com.shop.entity.Orders;
@@ -16,4 +19,8 @@ public interface OrderService {
 
     Page<OrdersDto> getCurrentUserOrders(String username, PageRequest createdDt);
     Optional<Orders> getCurrentUserOrders(String orderId);
+    Page<OrdersDto> getAllOrders(String status, Pageable pageable);
+    Orders updateOrderStatus(String orderId, String status);
+    boolean isValidStatusTransition(String currentStatus, String newStatus);
+    OrderStatistics getStatistics(int year, String period);
 }

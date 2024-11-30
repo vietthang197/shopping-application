@@ -18,15 +18,28 @@
         </div>
         <!-- Các nút điều hướng với icon -->
         <div class="flex items-center space-x-6">
+            <a href="/admin" class="flex items-center text-gray-800">
+                Dashboard
+            </a>
+            <a href="/admin/orders" class="flex items-center text-gray-800">
+                Đơn hàng
+            </a>
             <a href="/admin/products" class="flex items-center text-gray-800">
-                Product
+                Sản phẩm
             </a>
             <a href="/admin/product-categories" class="flex items-center text-gray-800">
-                Category
+                Danh mục sản phẩm
             </a>
             <a href="/admin/roles" class="flex items-center text-gray-800">
                 Role
             </a>
+            <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
+                <button type="submit"
+                        class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                    <span class="material-icons mr-2 align-middle text-sm">logout</span>
+                    Đăng xuất
+                </button>
+            </form>
         </div>
     </div>
 </header>
@@ -41,7 +54,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/roles" class="btn btn-secondary">Cancel</a>
+        <a href="/admin/roles" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 </body>

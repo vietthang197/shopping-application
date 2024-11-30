@@ -78,7 +78,7 @@ public class CartController {
                 session.setAttribute("cart", cart);
             }
 
-            // Add to cart
+            // Thêm vào giỏ hàng
             cart.addItem(product, quantity);
 
             return ResponseEntity.ok(Map.of(

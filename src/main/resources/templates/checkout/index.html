@@ -23,7 +23,7 @@
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
       <a href="/cart" class="flex items-center text-gray-800 relative">
-        <span class="material-icons mr-1">shopping_cart</span> Cart
+        <span class="material-icons mr-1">shopping_cart</span> Giỏ hàng
         <span id="cartCount"
               th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
               th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
@@ -36,7 +36,7 @@
                 id="categories-menu-button"
                 data-dropdown-toggle="categories-dropdown">
           <span class="material-icons mr-1">inventory_2</span>
-          Product Categories
+          Danh mục sản phẩm
           <span class="material-icons text-sm ml-1">arrow_drop_down</span>
         </button>
 
@@ -81,7 +81,7 @@
           <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
              class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
             <span class="material-icons mr-2 align-middle text-sm">store</span>
-            Manage shop
+            Quản lý cửa hàng
           </a>
           <form th:action="@{/logout}" method="post" class="block">
             <button type="submit"
@@ -107,7 +107,7 @@
           <label class="block text-sm font-medium text-gray-700">Họ và tên</label>
           <input type="text"
                  th:field="*{fullName}"
-                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  required>
           <span th:if="${#fields.hasErrors('fullName')}"
                 th:errors="*{fullName}"
@@ -118,7 +118,7 @@
           <label class="block text-sm font-medium text-gray-700">Số điện thoại</label>
           <input type="tel"
                  th:field="*{phone}"
-                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                  required>
           <span th:if="${#fields.hasErrors('phone')}"
                 th:errors="*{phone}"
@@ -128,7 +128,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700">Địa chỉ giao hàng</label>
           <textarea th:field="*{address}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     rows="3"
                     required></textarea>
           <span th:if="${#fields.hasErrors('address')}"
@@ -139,7 +139,7 @@
         <div>
           <label class="block text-sm font-medium text-gray-700">Ghi chú</label>
           <textarea th:field="*{note}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     rows="2"></textarea>
         </div>
 

@@ -31,4 +31,6 @@ public class Orders {
     @Column(name = "status", length = 100)
     private String status;
 
+    @Column(name = "customer_note", length = 2000)
+    private String customerNote;
 }

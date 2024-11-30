@@ -21,4 +21,5 @@ public class OrdersDto {
     private LocalDateTime createdDt;
     private String status;
     private BigDecimal totalAmount;
+    private String customerNote;
 }

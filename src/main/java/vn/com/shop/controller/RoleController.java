@@ -50,12 +50,12 @@ public class RoleController {
     @PostMapping("/edit/{id}")
     public String updateRole(@PathVariable String id, @ModelAttribute Role role) {
         roleService.updateRole(id, role);
-        return "redirect:/roles";
+        return "redirect:/admin/roles";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteRole(@PathVariable String id) {
         roleService.deleteRole(id);
-        return "redirect:/roles";
+        return "redirect:/admin/roles";
     }
 }

@@ -24,7 +24,7 @@
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
       <a href="/cart" class="flex items-center text-gray-800 relative">
-        <span class="material-icons mr-1">shopping_cart</span> Cart
+        <span class="material-icons mr-1">shopping_cart</span> Giỏ hàng
         <span id="cartCount"
               th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
               th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
@@ -37,7 +37,7 @@
                 id="categories-menu-button"
                 data-dropdown-toggle="categories-dropdown">
           <span class="material-icons mr-1">inventory_2</span>
-          Product Categories
+          Danh mục sản phẩm
           <span class="material-icons text-sm ml-1">arrow_drop_down</span>
         </button>
 
@@ -82,7 +82,7 @@
           <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
              class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
             <span class="material-icons mr-2 align-middle text-sm">store</span>
-            Manage shop
+            Quản lý cửa hàng
           </a>
           <form th:action="@{/logout}" method="post" class="block">
             <button type="submit"

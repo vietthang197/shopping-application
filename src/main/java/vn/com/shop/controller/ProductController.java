@@ -38,7 +38,7 @@ public class ProductController {
     @GetMapping("/admin/products/delete/{id}")
     public String deleteProduct(@PathVariable String id) {
         productService.deleteProduct(id);
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/admin/products/create")
@@ -71,7 +71,7 @@ public class ProductController {
             }
         }
 
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/admin/products/edit/{id}")
@@ -85,7 +85,7 @@ public class ProductController {
         model.addAttribute("avatar", avatar);
         model.addAttribute("additionalImages", additionalImages);
 
-        return "product/form";
+        return "/product/form";
     }
 
     @PostMapping("/admin/products/edit/{id}")
@@ -112,13 +112,13 @@ public class ProductController {
             }
         }
 
-        return "redirect:/products";
+        return "redirect:/admin/products";
     }
 
     @GetMapping("/admin/products/delete-image/{imageId}")
     public String deleteProductImage(@PathVariable String imageId,
                                      @RequestParam("productId") String productId) {
         productImageService.deleteProductImage(imageId);
-        return "redirect:/products/edit/" + productId;
+        return "redirect:/admin/products/edit/" + productId;
     }
 }

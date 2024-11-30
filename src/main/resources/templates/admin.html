@@ -19,21 +19,170 @@
     </div>
     <!-- Các nút điều hướng với icon -->
     <div class="flex items-center space-x-6">
+      <a href="/admin" class="flex items-center text-gray-800">
+        Dashboard
+      </a>
       <a href="/admin/orders" class="flex items-center text-gray-800">
-        Orders
+        Đơn hàng
       </a>
       <a href="/admin/products" class="flex items-center text-gray-800">
-        Product
+        Sản phẩm
       </a>
       <a href="/admin/product-categories" class="flex items-center text-gray-800">
-        Category
+        Danh mục sản phẩm
       </a>
       <a href="/admin/roles" class="flex items-center text-gray-800">
         Role
       </a>
+      <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
+        <button type="submit"
+                class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+          <span class="material-icons mr-2 align-middle text-sm">logout</span>
+          Đăng xuất
+        </button>
+      </form>
     </div>
   </div>
 </header>
+<div class="container mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+  </div>
 
+  <!-- Period Selector -->
+  <div class="mb-6 flex items-center space-x-4">
+    <select id="period"
+            onchange="updateStats()"
+            class="rounded-md border-gray-300">
+      <option value="month" th:selected="${selectedPeriod == 'month'}">Theo tháng</option>
+      <option value="year" th:selected="${selectedPeriod == 'year'}">Theo năm</option>
+    </select>
+
+    <select id="year"
+            onchange="updateStats()"
+            class="rounded-md border-gray-300"
+            th:if="${selectedPeriod == 'month'}">
+      <option th:each="y : ${#numbers.sequence(currentYear - 4, currentYear)}"
+              th:value="${y}"
+              th:text="${y}"
+              th:selected="${y == selectedYear}">
+      </option>
+    </select>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Revenue Chart -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-bold mb-4">Doanh thu</h2>
+      <canvas id="revenueChart"></canvas>
+    </div>
+
+    <!-- Orders Chart -->
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-bold mb-4">Đơn hàng</h2>
+      <canvas id="ordersChart"></canvas>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script th:inline="javascript">
+  const stats = /*[[${stats}]]*/;
+  const period = /*[[${selectedPeriod}]]*/;
+
+  function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(value);
+  }
+
+  function initCharts() {
+    const data = period === 'month' ? stats.monthlyStats : stats.yearlyStats;
+
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+      type: 'line',
+      data: {
+        labels: data.map(item => period === 'month' ? `Tháng ${item.month}` : `${item.year}`),
+        datasets: [{
+          label: 'Doanh thu',
+          data: data.map(item => item.revenue),
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return formatCurrency(context.raw);
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Orders Chart
+    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+    new Chart(ordersCtx, {
+      type: 'bar',
+      data: {
+        labels: data.map(item => period === 'month' ? `Tháng ${item.month}` : `${item.year}`),
+        datasets: [
+          {
+            label: 'Đơn hoàn thành',
+            data: data.map(item => item.completedOrders),
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgb(75, 192, 192)',
+            borderWidth: 1
+          },
+          {
+            label: 'Đơn hủy',
+            data: data.map(item => item.cancelledOrders),
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+  }
+
+  function updateStats() {
+    const period = document.getElementById('period').value;
+    const year = document.getElementById('year')?.value || new Date().getFullYear();
+    window.location.href = `/admin?period=${period}&year=${year}`;
+  }
+
+  // Initialize charts when page loads
+  document.addEventListener('DOMContentLoaded', initCharts);
+</script>
 </body>
 </html>

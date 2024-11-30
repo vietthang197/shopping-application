@@ -11,6 +11,7 @@ public class OrdersMapper {
                 .status(orders.getStatus())
                 .orderItems(OrderItemMapper.toSetDto(orders.getOrderItems()))
                 .customer(CustomerMapper.toDto(orders.getCustomer()))
+                .customerNote(orders.getCustomerNote())
                 .build();
     }
 }

@@ -49,7 +49,7 @@ public class ProductCategoryController {
     @PostMapping("/admin/product-categories/create")
     public String createProductCategory(@ModelAttribute ProductCategory productCategory) {
         productCategoryService.createProductCategory(productCategory);
-        return "redirect:/product-categories";
+        return "redirect:/admin/product-categories";
     }
 
     @GetMapping("/admin/product-categories/edit/{id}")
@@ -62,16 +62,16 @@ public class ProductCategoryController {
     @PostMapping("/admin/product-categories/edit/{id}")
     public String updateProductCategory(@PathVariable String id, @ModelAttribute ProductCategory productCategory) {
         productCategoryService.updateProductCategory(id, productCategory);
-        return "redirect:/product-categories";
+        return "redirect:/admin/product-categories";
     }
 
     @GetMapping("/admin/product-categories/delete/{id}")
     public String deleteProductCategory(@PathVariable String id) {
         productCategoryService.deleteProductCategory(id);
-        return "redirect:/product-categories";
+        return "redirect:/admin/product-categories";
     }
 
-    @GetMapping("/admin/product-categories/product/{categoryId}")
+    @GetMapping("/product-categories/product/{categoryId}")
     public String listProductsByCategory(@PathVariable String categoryId,
                                          @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "12") int size,

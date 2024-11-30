@@ -24,7 +24,7 @@
         <!-- Các nút điều hướng với icon -->
         <div class="flex items-center space-x-6">
             <a href="/cart" class="flex items-center text-gray-800 relative">
-                <span class="material-icons mr-1">shopping_cart</span> Cart
+                <span class="material-icons mr-1">shopping_cart</span> Giỏ hàng
                 <span id="cartCount"
                       th:text="'(' + ${session.cart != null ? session.cart.totalItems : '0'} + ')'"
                       th:class="${session.cart != null && session.cart.totalItems > 0 ? '' : 'hidden'}"
@@ -37,7 +37,7 @@
                         id="categories-menu-button"
                         data-dropdown-toggle="categories-dropdown">
                     <span class="material-icons mr-1">inventory_2</span>
-                    Product Categories
+                    Danh mục sản phẩm
                     <span class="material-icons text-sm ml-1">arrow_drop_down</span>
                 </button>
 
@@ -77,18 +77,18 @@
                     <a href="/profile"
                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
                         <span class="material-icons mr-2 align-middle text-sm">person</span>
-                        Profile
+                        Tài khoản
                     </a>
                     <a href="/admin" sec:authorize="hasAuthority('ADMIN')"
                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100" style="z-index: 999">
                         <span class="material-icons mr-2 align-middle text-sm">store</span>
-                        Manage shop
+                        Quản lý cửa hàng
                     </a>
                     <form th:action="@{/logout}" method="post" class="block" style="z-index: 999">
                         <button type="submit"
                                 class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                             <span class="material-icons mr-2 align-middle text-sm">logout</span>
-                            Logout
+                            Đăng xuất
                         </button>
                     </form>
                 </div>
@@ -159,7 +159,7 @@
 
 <!-- Popular Products Section -->
 <div class="container mx-auto px-4 mt-8">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">Popular product</h2>
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Sản phẩm nổi bật</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Product Card -->
         <div class="bg-white rounded-lg shadow-md overflow-hidden" th:each="product : ${popularProduct}">
@@ -175,12 +175,12 @@
                         th:data-product-id="${product.id}"
                         onclick="addToCart(this)"
                         class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-                    Add to cart
+                    Thêm vào giỏ hàng
                 </button>
 
                 <a sec:authorize="!isFullyAuthenticated()" href="/login" target="_self"
                    class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 text-center inline-block">
-                    Add to cart
+                    Thêm vào giỏ hàng
                 </a>
             </div>
         </div>
@@ -205,12 +205,12 @@
                         th:data-product-id="${product.id}"
                         onclick="addToCart(this)"
                         class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600">
-                    Add to cart
+                    Thêm vào giỏ hàng
                 </button>
 
                 <a sec:authorize="!isFullyAuthenticated()" href="/login" target="_self"
                    class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 text-center inline-block">
-                    Add to cart
+                    Thêm vào giỏ hàng
                 </a>
             </div>
         </div>
@@ -236,10 +236,10 @@
             .then(response => response.json())
             .then(data => {
                 updateCartCount(data.totalItems);
-                showNotification('Added to cart successfully');
+                showNotification('Thêm vào giỏ hàng thành công');
             })
             .catch(error => {
-                showNotification('Error adding to cart', 'error');
+                showNotification('Thêm vào giỏ hàng thất bại', 'error');
             });
     }
 
@@ -259,23 +259,6 @@
             .then(data => {
                 location.reload();
             });
-    }
-
-    function removeItem(productId) {
-        if (confirm('Are you sure you want to remove this item?')) {
-            fetch('/cart/remove', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    [csrfHeader]: csrfToken
-                },
-                body: `productId=${productId}`
-            })
-                .then(response => response.json())
-                .then(data => {
-                    location.reload();
-                });
-        }
     }
 
     // Notification function
