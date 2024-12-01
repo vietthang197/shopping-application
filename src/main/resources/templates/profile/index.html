@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopping App</title>
+  <title>Baby Mom Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
@@ -18,7 +18,7 @@
     <!-- Icon menu ở góc trái -->
     <div class="flex items-center space-x-4">
       <a href="/" class="flex items-center text-gray-800 font-semibold">
-        <span class="material-icons mr-2">store</span> Shopping App
+        <span class="material-icons mr-2">store</span> Baby Mom Store
       </a>
     </div>
     <!-- Các nút điều hướng với icon -->
@@ -121,7 +121,7 @@
           <div>
             <label class="block text-sm font-medium text-gray-700">Tên đăng nhập</label>
             <input type="text"
-                   th:value="${account.username}"
+                   th:value="${account.getUsername()}"
                    disabled
                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           </div>

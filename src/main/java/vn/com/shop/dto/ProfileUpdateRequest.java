@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class ProfileUpdateRequest {
-    @NotBlank(message = "Họ tên không được để trống")
     private String fullName;
 
     @Email(message = "Email không hợp lệ")

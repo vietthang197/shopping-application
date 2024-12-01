@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopping App</title>
+  <title>Baby Mom Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
@@ -17,8 +17,8 @@
   <div class="container mx-auto px-4 py-4 flex items-center justify-between">
     <!-- Icon menu ở góc trái -->
     <div class="flex items-center space-x-4">
-      <a href="/static" class="flex items-center text-gray-800 font-semibold">
-        <span class="material-icons mr-2">store</span> Shopping App
+      <a href="/" class="flex items-center text-gray-800 font-semibold">
+        <span class="material-icons mr-2">store</span> Baby Mom Store
       </a>
     </div>
     <!-- Các nút điều hướng với icon -->
@@ -101,9 +101,9 @@
   <div class="bg-white rounded-lg shadow-lg p-6">
     <!-- Product Header - Breadcrumb -->
     <div class="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-      <a href="/static" class="hover:text-blue-500">Home</a>
+      <a href="/" class="hover:text-blue-500">Home</a>
       <span>/</span>
-      <a href="/category" class="hover:text-blue-500">Category</a>
+      <a th:href="'/product-categories/product/' + ${product.getProductCategory().getId()}" class="hover:text-blue-500" th:text="${product.getProductCategory().getName()}"></a>
       <span>/</span>
       <span class="text-gray-700" th:text="${product.getName()}">Product Name</span>
     </div>

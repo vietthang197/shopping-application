@@ -38,7 +38,10 @@ public class ProfileController {
         Account account = accountService.findAccountByUsername(username);
 
         model.addAttribute("account", account);
-        model.addAttribute("profileUpdateRequest", new ProfileUpdateRequest());
+
+        ProfileUpdateRequest profileUpdateRequest = new ProfileUpdateRequest();
+        profileUpdateRequest.setEmail(account.getEmail());
+        model.addAttribute("profileUpdateRequest", profileUpdateRequest);
         model.addAttribute("passwordChangeRequest", new PasswordChangeRequest());
 
         return "profile/index";
