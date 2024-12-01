@@ -44,7 +44,7 @@
   </div>
 </header>
 <div class="container mt-5">
-  <a href="/admin/roles/create" class="btn btn-primary mb-3">Create New Role</a>
+  <a href="/admin/roles/create" class="btn btn-primary mb-3">Thêm mới Role</a>
 
   <table class="table">
     <thead>
@@ -59,10 +59,10 @@
       <td th:text="${role.id}"></td>
       <td th:text="${role.name}"></td>
       <td>
-        <a th:href="@{/admin/roles/edit/{id}(id=${role.id})}" class="btn btn-sm btn-warning">Edit</a>
+        <a th:href="@{/admin/roles/edit/{id}(id=${role.id})}" class="btn btn-sm btn-warning">Sửa</a>
         <a th:href="@{/admin/roles/delete/{id}(id=${role.id})}"
            class="btn btn-sm btn-danger"
-           onclick="return confirm('Are you sure?')">Delete</a>
+           onclick="return confirm('Bạn có muốn xóa bản ghi này?')">Xóa</a>
       </td>
     </tr>
     </tbody>

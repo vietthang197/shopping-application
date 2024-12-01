@@ -57,7 +57,7 @@
                 <span class="material-icons mr-1">search</span> Tra cứu đơn hàng
             </a>
             <a sec:authorize="isAnonymous()" href="/login" class="flex items-center text-gray-800">
-                <span class="material-icons mr-1">account_circle</span> Login/Register
+                <span class="material-icons mr-1">account_circle</span> Đăng nhập/Đăng ký
             </a>
             <!-- Bằng đoạn code dropdown menu sau -->
             <div sec:authorize="isFullyAuthenticated()" class="relative">
@@ -88,7 +88,7 @@
                         <button type="submit"
                                 class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
                             <span class="material-icons mr-2 align-middle text-sm">logout</span>
-                            Logout
+                            Đăng xuất
                         </button>
                     </form>
                 </div>

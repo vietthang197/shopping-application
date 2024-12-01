@@ -45,19 +45,19 @@
   </div>
 </header>
 <div class="container mt-5">
-  <a href="/admin/products/create" class="btn btn-primary mb-3">Create New Product</a>
+  <a href="/admin/products/create" class="btn btn-primary mb-3">Thêm mới sản phẩm</a>
 
   <table class="table">
     <thead>
     <tr>
       <th>ID</th>
-      <th>Name</th>
-      <th>Category</th>
+      <th>Tên SP</th>
+      <th>Loại SP</th>
       <th>SKU</th>
-      <th>Quantity</th>
-      <th>Buy Price</th>
-      <th>Sell Price</th>
-      <th>Actions</th>
+      <th>Số lượng</th>
+      <th>Giá nhập</th>
+      <th>Giá mua</th>
+      <th>Hành động</th>
     </tr>
     </thead>
     <tbody>
@@ -70,10 +70,10 @@
       <td th:text="${#numbers.formatDecimal(product.buyPrice, 0, 'COMMA', 0, 'POINT')}"></td>
       <td th:text="${#numbers.formatDecimal(product.sellPrice, 0, 'COMMA', 0, 'POINT')}"></td>
       <td>
-        <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning">Edit</a>
+        <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-sm btn-warning">Sửa</a>
         <a th:href="@{/admin/products/delete/{id}(id=${product.id})}"
            class="btn btn-sm btn-danger"
-           onclick="return confirm('Are you sure?')">Delete</a>
+           onclick="return confirm('Bạn có muốn xóa bản ghi này?')">Xóa</a>
       </td>
     </tr>
     </tbody>

@@ -45,14 +45,14 @@
   </div>
 </header>
 <div class="container mt-5">
-  <a href="/admin/product-categories/create" class="btn btn-primary mb-3">Create New Product Category</a>
+  <a href="/admin/product-categories/create" class="btn btn-primary mb-3">Thêm mới loại sản phẩm</a>
 
   <table class="table">
     <thead>
     <tr>
       <th>ID</th>
-      <th>Name</th>
-      <th>Actions</th>
+      <th>Loại sản phẩm</th>
+      <th>Hành động</th>
     </tr>
     </thead>
     <tbody>
@@ -60,10 +60,10 @@
       <td th:text="${productCategory.id}"></td>
       <td th:text="${productCategory.name}"></td>
       <td>
-        <a th:href="@{/admin/product-categories/edit/{id}(id=${productCategory.id})}" class="btn btn-sm btn-warning">Edit</a>
+        <a th:href="@{/admin/product-categories/edit/{id}(id=${productCategory.id})}" class="btn btn-sm btn-warning">Sửa</a>
         <a th:href="@{/admin/product-categories/delete/{id}(id=${productCategory.id})}"
            class="btn btn-sm btn-danger"
-           onclick="return confirm('Are you sure?')">Delete</a>
+           onclick="return confirm('Bạn có muốn xóa bản ghi này?')">Xóa</a>
       </td>
     </tr>
     </tbody>

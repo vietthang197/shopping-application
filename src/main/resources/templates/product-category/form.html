@@ -45,17 +45,17 @@
     </div>
 </header>
 <div class="container mt-5">
-    <h2 th:text="${productCategory.id == null ? 'Create Product Category' : 'Edit Product Category'}">Product Category Form</h2>
+    <h2 th:text="${productCategory.id == null ? 'Thêm mới loái sản phẩm' : 'Sửa loại sản phẩm'}">Product Category Form</h2>
 
     <form th:action="${productCategory.id == null ? '/admin/product-categories/create' : '/admin/product-categories/edit/' + productCategory.id}"
           th:object="${productCategory}" method="post">
         <div class="mb-3">
-            <label for="name" class="form-label">Product Category Name</label>
+            <label for="name" class="form-label">Tên loại sản phẩm</label>
             <input type="text" class="form-control" id="name" th:field="*{name}" required>
         </div>
 
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/admin/product-categories" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="/admin/product-categories" class="btn btn-secondary">Hủy</a>
     </form>
 </div>
 </body>
