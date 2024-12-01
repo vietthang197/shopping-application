@@ -24,13 +24,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Account> accountOptional = accountRepository.findByUsername(username);
+        Optional<Account> accountOptional = accountRepository.findByUsername(username.toLowerCase());
         if (accountOptional.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
         Account account = accountOptional.get();
         return User
-                .withUsername(username)
+                .withUsername(username.toLowerCase())
                 .password(account.getPassword())
                 .authorities(account.getRoles().stream().map(item -> new SimpleGrantedAuthority(item.getName())).collect(Collectors.toList()))
                 .accountExpired(false)

@@ -27,13 +27,13 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Account registerNewAccount(RegisterRequest request) {
-        if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (accountRepository.findByUsername(request.getUsername().toLowerCase()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
 
         Account account = new Account();
-        account.setUsername(request.getUsername());
-        account.setEmail(request.getEmail());
+        account.setUsername(request.getUsername().toLowerCase());
+        account.setEmail(request.getEmail().toLowerCase());
         account.setPassword(passwordEncoder.encode(request.getPassword()));
 
         Role userRole = roleRepository.findByName("USER")
@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public Account findAccountByUsername(String username) {
-        return accountRepository.findByUsername(username).orElse(null);
+        return accountRepository.findByUsername(username.toLowerCase()).orElse(null);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        account.setEmail(request.getEmail());
+        account.setEmail(request.getEmail().toLowerCase());
         accountRepository.save(account);
     }
 
